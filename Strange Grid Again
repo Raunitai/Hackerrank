@@ -1,0 +1,26 @@
+#include <stdio.h>
+
+int main() {
+    long long r, c;
+
+    // Read the row and column from input
+    scanf("%lld %lld", &r, &c);
+
+    // Compute the base value for the current pair of rows
+    long long base = ((r - 1) / 2) * 10;
+    long long result;
+
+    // Determine if the row is odd or even
+    if (r % 2 == 1) {
+        // Odd row (1-based): starts from even base
+        result = base + 2 * (c - 1);
+    } else {
+        // Even row (1-based): starts from base + 1 (odd numbers)
+        result = base + 1 + 2 * (c - 1);
+    }
+
+    // Output the result
+    printf("%lld\n", result);
+
+    return 0;
+}
