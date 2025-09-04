@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 1001
+
+typedef struct {
+    int x, y;
+} State;
+
+bool visited[MAX][MAX];
+State queue[MAX * MAX];
+int front, rear;
+
+void reset(int a, int b) {
+    for (int i = 0; i <= a; i++) {
+        for (int j = 0; j <= b; j++) {
+            visited[i][j] = false;
+        }
+    }
+    front = rear = 0;
+}
+
+void enqueue(int x, int y) {
+    if (!visited[x][y]) {
+        visited[x][y] = true;
+        queue[rear++] = (State){x, y};
+    }
+}
+
+bool can_measure(int a, int b, int c) {
+    if (c > a && c > b) return false;
+    if (c == 0) return true;
+    
+
+    reset(a, b);
+    enqueue(0, 0);
+
+    while (front < rear) {
+        State s = queue[front++];
+        int x = s.x, y = s.y;
+
+        if (x == c || y == c)
+            return true;
+
+        enqueue(a, y); // Fill jug A
+        enqueue(x, b); // Fill jug B
+        enqueue(0, y); // Empty jug A
+        enqueue(x, 0); // Empty jug B
+
+        // Pour A -> B
+        int pourAtoB = (b - y < x) ? (b - y) : x;
+        enqueue(x - pourAtoB, y + pourAtoB);
+
+        // Pour B -> A
+        int pourBtoA = (a - x < y) ? (a - x) : y;
+        enqueue(x + pourBtoA, y - pourBtoA);
+    }
+
+    return false;
+}
+
+int main() {
+    int T;
+    scanf("%d", &T);
+
+    while (T--) {
+        int a, b, c;
+        scanf("%d %d %d", &a, &b, &c);
+
+        if (can_measure(a, b, c))
+            printf("YES\n");
+        else
+            printf("NO\n");
+    }
+
+    return 0;
+}
